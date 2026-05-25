@@ -1,0 +1,123 @@
+body {
+    width: 320px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 15px;
+    margin: 0;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+h3 {
+    margin-top: 0;
+    color: #00c564;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.2rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: white;
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+input:focus {
+    outline: none;
+    border-color: #00c564;
+    box-shadow: 0 0 0 2px rgba(0, 197, 100, 0.2);
+}
+
+button {
+    width: 100%;
+    cursor: pointer;
+    background-color: #00c564;
+    color: white;
+    border: none;
+    padding: 10px;
+    font-weight: bold;
+    border-radius: 4px;
+    transition: background 0.2s, transform 0.1s;
+}
+
+button:hover {
+    background-color: #00a855;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+li {
+    background: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+li:hover {
+    transform: translateX(3px);
+}
+
+.webtoon-link {
+    flex-grow: 1;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-right: 10px;
+}
+
+.btn-supprimer {
+    background-color: #ffefef;
+    color: #ff4d4d;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.btn-supprimer:hover {
+    background-color: #ff4d4d;
+    color: white;
+}
+
+.empty-msg {
+    text-align: center;
+    color: #999;
+    font-style: italic;
+    margin-top: 20px;
+}
