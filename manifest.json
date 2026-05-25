@@ -17,7 +17,11 @@
   ],
   "content_scripts": [
     {
-      "matches": ["*://*.webtoons.com/*/*/viewer*"],
+      "matches": [
+        "*://*.webtoons.com/*/*/viewer*",
+        "*://*.webtoons.com/*/*/*/viewer*",
+        "*://*.webtoons.com/*/*/*/*/viewer*"
+      ],
       "js": ["content.js"]
     }
   ],
