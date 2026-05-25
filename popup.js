@@ -30,34 +30,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function afficherListe(webtoons) {
         liste.innerHTML = '';
-        for (const [titre, data] of Object.entries(webtoons)) {
+        const entries = Object.entries(webtoons);
+
+        if (entries.length === 0) {
+            const emptyMsg = document.createElement('div');
+            emptyMsg.className = 'empty-msg';
+            emptyMsg.textContent = 'Aucun webtoon suivi pour le moment.';
+            liste.appendChild(emptyMsg);
+            return;
+        }
+
+        for (const [titre, data] of entries) {
             const li = document.createElement('li');
             
-            // --- GESTION DE LA RÉTROCOMPATIBILITÉ ---
-            // Si c'est une ancienne sauvegarde (juste un texte), on l'adapte
             let numChapitre = typeof data === 'object' ? data.chapitre : data;
             let lienLivre = typeof data === 'object' ? data.url : null;
             
-            // --- CRÉATION DU LIEN ---
             const texte = document.createElement('a');
+            texte.className = 'webtoon-link';
             texte.textContent = `${titre} - Chap. ${numChapitre}`;
             
-            // Si on a une URL, on rend le texte cliquable
             if (lienLivre) {
                 texte.href = lienLivre;
-                texte.target = '_blank'; // Ouvre dans un nouvel onglet
-                texte.style.color = '#0056b3'; // Couleur bleue de lien
-                texte.style.textDecoration = 'none'; // Enlève le souligné moche
-                texte.style.fontWeight = 'bold';
+                texte.target = '_blank';
+                texte.style.color = '#00c564';
             } else {
-                // S'il n'y a pas d'URL (ajout manuel)
-                texte.style.color = '#333';
-                texte.style.textDecoration = 'none';
+                texte.style.color = '#666';
+                texte.style.cursor = 'default';
             }
 
-            // --- BOUTON SUPPRIMER ---
             const btnSupprimer = document.createElement('button');
-            btnSupprimer.textContent = 'X';
+            btnSupprimer.textContent = '✕';
             btnSupprimer.className = 'btn-supprimer';
             btnSupprimer.title = 'Supprimer ce webtoon';
             
