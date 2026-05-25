@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "Webtoon Tracker",
+  "version": "1.1",
+  "description": "Sauvegarde automatique du dernier chapitre lu.",
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "permissions": [
+    "storage"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["*://*.webtoons.com/*/*/viewer*"],
+      "js": ["content.js"]
+    }
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "contact@example.com",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
+    }
+  }
+}
