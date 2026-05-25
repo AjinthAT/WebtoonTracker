@@ -100,7 +100,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (lastUpdate) {
                 const dateElement = document.createElement('span');
                 dateElement.className = 'last-read';
-                dateElement.textContent = `Lu le ${new Date(lastUpdate).toLocaleDateString()} à ${new Date(lastUpdate).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
+                const dateLecture = new Date(lastUpdate).toLocaleDateString('fr-FR');
+                const heureLecture = new Date(lastUpdate).toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'});
+                dateElement.textContent = `Lu le ${dateLecture} à ${heureLecture}`;
                 infoContainer.appendChild(dateElement);
             }
 
