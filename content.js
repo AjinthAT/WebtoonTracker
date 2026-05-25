@@ -16,7 +16,7 @@
 
             const lienComplet = window.location.href;
 
-            chrome.storage.local.get(['webtoons'], (result) => {
+            chrome.storage.sync.get(['webtoons'], (result) => {
                 let webtoons = result.webtoons || {};
                 
                 // On ne met à jour que si les données sont valides
@@ -27,7 +27,7 @@
                         lastUpdate: Date.now()
                     };
 
-                    chrome.storage.local.set({ webtoons: webtoons }, () => {
+                    chrome.storage.sync.set({ webtoons: webtoons }, () => {
                         console.log(`[Webtoon Tracker] ✅ Sauvegardé : ${titre} (Ep. ${chapitre})`);
                     });
                 }

@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnSauvegarder = document.getElementById('sauvegarder');
     const liste = document.getElementById('liste');
 
-    chrome.storage.local.get(['webtoons'], (result) => {
+    chrome.storage.sync.get(['webtoons'], (result) => {
         let webtoons = result.webtoons || {};
         afficherListe(webtoons);
     });
@@ -14,12 +14,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const chapitre = chapitreInput.value.trim();
 
         if (titre && chapitre) {
-            chrome.storage.local.get(['webtoons'], (result) => {
+            chrome.storage.sync.get(['webtoons'], (result) => {
                 let webtoons = result.webtoons || {};
                 // Ajout manuel : on n'a pas d'URL, on met null
                 webtoons[titre] = { chapitre: chapitre, url: null }; 
 
-                chrome.storage.local.set({ webtoons: webtoons }, () => {
+                chrome.storage.sync.set({ webtoons: webtoons }, () => {
                     afficherListe(webtoons);
                     titreInput.value = '';
                     chapitreInput.value = '';
@@ -75,10 +75,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function supprimerWebtoon(titreASupprimer) {
-        chrome.storage.local.get(['webtoons'], (result) => {
+        chrome.storage.sync.get(['webtoons'], (result) => {
             let webtoons = result.webtoons || {};
             delete webtoons[titreASupprimer];
-            chrome.storage.local.set({ webtoons: webtoons }, () => {
+            chrome.storage.sync.set({ webtoons: webtoons }, () => {
                 afficherListe(webtoons);
             });
         });
