@@ -17,7 +17,7 @@
 
 ## ✨ Présentation
 
-**Webtoon Tracker** est une extension Firefox légère et intuitive qui permet de suivre facilement votre progression de lecture sur [WEBTOON](https://www.webtoons.com/).
+**Webtoon Tracker** est une extension légère et intuitive qui permet de suivre facilement votre progression de lecture sur [WEBTOON](https://www.webtoons.com/).
 
 Plus besoin de mémoriser le dernier chapitre lu ou de rechercher manuellement l’endroit où vous vous étiez arrêté : l’extension sauvegarde votre progression et vous permet de reprendre votre lecture rapidement depuis votre bibliothèque.
 
@@ -26,37 +26,30 @@ Plus besoin de mémoriser le dernier chapitre lu ou de rechercher manuellement l
 ## 🚀 Fonctionnalités
 
 ### 📌 Sauvegarde automatique
-
-Lorsque vous consultez un chapitre sur WEBTOON, l’extension détecte automatiquement la série et mémorise votre progression de lecture.
+Lorsque vous consultez un chapitre sur WEBTOON, l’extension détecte automatiquement la série et mémorise votre progression.
 
 ### 📖 Reprise rapide
+Cliquez sur une série enregistrée pour rouvrir directement le dernier chapitre lu.
 
-Depuis l’interface de l’extension, cliquez sur une série enregistrée pour rouvrir directement le dernier chapitre lu.
+### 🔍 Recherche et Tri intelligent
+Retrouvez facilement vos séries grâce à la barre de recherche. Vos lectures les plus récentes remontent automatiquement en haut de la liste.
 
 ### ✍️ Ajout manuel
-
-Vous pouvez ajouter ou modifier manuellement une série et son chapitre actuel, pratique lorsque vous lisez également depuis un autre appareil.
+Ajoutez ou modifiez manuellement une série, pratique pour synchroniser des lectures faites ailleurs.
 
 ### 🧹 Gestion de la bibliothèque
-
 Supprimez facilement les séries terminées ou celles que vous ne souhaitez plus suivre.
 
-### 🔒 Respect de la vie privée
-
-Webtoon Tracker fonctionne localement dans votre navigateur :
-
-- aucune création de compte ;
-- aucune publicité ;
-- aucune collecte de données personnelles ;
-- aucune transmission de votre progression vers un serveur externe.
+### 🔒 Vie privée & Synchronisation
+- **Synchronisation native :** Retrouvez votre progression sur tous vos appareils via votre compte navigateur.
+- **Respect de la vie privée :** Aucune création de compte externe, aucune publicité, aucune collecte de données.
 
 ---
 
 ## 📥 Installation
 
 ### Depuis Mozilla Add-ons
-
-Vous pouvez installer Webtoon Tracker directement sur Firefox depuis Mozilla Add-ons :
+Vous pouvez installer Webtoon Tracker directement sur Firefox :
 
 <div align="center">
 
@@ -64,15 +57,15 @@ Vous pouvez installer Webtoon Tracker directement sur Firefox depuis Mozilla Add
 
 </div>
 
+---
+
 ## 🛠️ Utilisation
 
-1. Installez l’extension sur Firefox.
+1. Installez l’extension.
 2. Rendez-vous sur [WEBTOON](https://www.webtoons.com/).
-3. Ouvrez une série et commencez votre lecture.
-4. L’extension enregistre automatiquement le chapitre consulté.
-5. Cliquez sur l’icône **Webtoon Tracker** dans la barre d’outils Firefox.
-6. Sélectionnez une série sauvegardée pour reprendre votre lecture.
-7. Utilisez les options disponibles pour ajouter, modifier ou supprimer une progression.
+3. Ouvrez une série : l’extension enregistre automatiquement le chapitre.
+4. Cliquez sur l’icône **Webtoon Tracker** dans votre barre d'outils.
+5. Sélectionnez une série pour reprendre votre lecture.
 
 ---
 
@@ -80,98 +73,36 @@ Vous pouvez installer Webtoon Tracker directement sur Firefox depuis Mozilla Add
 
 ```text
 webtoontracker/
-├── assets/
-│   └── webtoon-tracker-icon.png
-├── manifest.json
-├── popup.js
-├── popup.html
-├── content.js
-├── LICENSE
-└── README.md
+├── assets/          # Icônes et ressources
+├── manifest.json    # Configuration de l'extension
+├── popup.js         # Logique de l'interface
+├── popup.html       # Structure de l'interface
+├── popup.css        # Design de l'interface
+├── content.js       # Script de détection sur WEBTOON
+├── LICENSE          # Licence MIT
+└── README.md        # Documentation
 ```
-
----
-
-## 🔐 Données enregistrées
-
-L’extension peut stocker localement les informations nécessaires au suivi de lecture, par exemple :
-
-- le titre de la série ;
-- le dernier chapitre consulté ;
-- le lien permettant de reprendre la lecture ;
-- les séries ajoutées manuellement.
-
-Ces données servent uniquement au fonctionnement de Webtoon Tracker et restent stockées dans votre navigateur.
 
 ---
 
 ## 🗺️ Améliorations possibles
 
-Quelques fonctionnalités pourraient être ajoutées dans de futures versions :
-
-- recherche dans la bibliothèque ;
-- tri par dernière lecture ;
-- statut « terminé » pour les séries finies ;
-- export et import local de la progression ;
-- affichage de la date de dernière lecture ;
-- synchronisation optionnelle entre appareils ;
-- prise en charge d’autres plateformes de lecture.
-
----
-
-## 🐛 Signaler un bug
-
-Vous avez rencontré un problème ? Ouvrez une **Issue** en indiquant autant que possible :
-
-- la version de Firefox utilisée ;
-- la page WEBTOON concernée ;
-- le comportement attendu ;
-- le comportement observé ;
-- les étapes permettant de reproduire le bug ;
-- une capture d’écran, si nécessaire.
+- Statut « terminé » pour archiver les séries finies.
+- Export / Import local de la progression (Backup JSON).
+- Bouton pour vider toute la bibliothèque.
+- Prise en charge d’autres plateformes de lecture.
 
 ---
 
 ## 🤝 Contributions
-
-Les contributions sont les bienvenues.
-
-Pour contribuer au projet :
-
-1. Forkez le dépôt.
-2. Créez une branche pour votre modification :
-
-```bash
-git checkout -b feature/ma-fonctionnalite
-```
-
-3. Effectuez vos changements.
-4. Committez votre travail :
-
-```bash
-git commit -m "Ajout de ma fonctionnalité"
-```
-
-5. Envoyez votre branche :
-
-```bash
-git push origin feature/ma-fonctionnalite
-```
-
-6. Ouvrez une **Pull Request**.
+Les contributions sont les bienvenues via Pull Request.
 
 ---
 
 ## 📄 Licence
-
 Ce projet est distribué sous licence **MIT**.
-
-Consultez le fichier [LICENSE](./LICENSE) pour plus d’informations.
 
 ---
 
 ## ⚠️ Avertissement
-
-**Webtoon Tracker** est un projet indépendant.
-
-Cette extension n’est ni affiliée, ni approuvée, ni sponsorisée par **WEBTOON** ou ses propriétaires. Les noms, marques, logos et contenus associés à WEBTOON appartiennent à leurs propriétaires respectifs.
+**Webtoon Tracker** est un projet indépendant, non affilié à **WEBTOON**.
