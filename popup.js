@@ -4,6 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnSauvegarder = document.getElementById('sauvegarder');
     const rechercheInput = document.getElementById('recherche');
     const liste = document.getElementById('liste');
+    const btnExporter = document.getElementById('exporter');
+    const btnImporter = document.getElementById('importer');
+    const fileInput = document.getElementById('fileInput');
 
     let allWebtoons = {};
 
@@ -19,7 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const filtres = {};
         
         for (const [titre, data] of Object.entries(allWebtoons)) {
-            if (titre.toLowerCase().includes(terme)) {
+            const nomCible = data.titreAffichage ? data.titreAffichage.toLowerCase() : titre.toLowerCase();
+            if (nomCible.includes(terme)) {
                 filtres[titre] = data;
             }
         }
@@ -27,13 +31,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     btnSauvegarder.addEventListener('click', () => {
-        const titre = titreInput.value.trim().toUpperCase();
+        const titre = titreInput.value.trim();
         const chapitre = chapitreInput.value.trim();
 
         if (titre && chapitre) {
             chrome.storage.sync.get(['webtoons'], (result) => {
                 let webtoons = result.webtoons || {};
-                webtoons[titre] = { 
+                const key = titre.toUpperCase();
+                webtoons[key] = { 
+                    titreAffichage: titre,
                     chapitre: chapitre, 
                     url: null,
                     lastUpdate: Date.now()
@@ -49,10 +55,51 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // --- EXPORT JSON ---
+    btnExporter.addEventListener('click', () => {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(allWebtoons, null, 2));
+        const downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        downloadAnchorNode.setAttribute("download", "webtoon_tracker_backup.json");
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+    });
+
+    // --- IMPORT JSON ---
+    btnImporter.addEventListener('click', () => fileInput.click());
+
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const importedData = JSON.parse(event.target.result);
+                if (confirm("Voulez-vous fusionner ces données avec votre liste actuelle ?")) {
+                    chrome.storage.sync.get(['webtoons'], (result) => {
+                        let currentWebtoons = result.webtoons || {};
+                        // Fusion simple (les données importées écrasent les locales en cas de conflit)
+                        const mergedData = { ...currentWebtoons, ...importedData };
+                        
+                        chrome.storage.sync.set({ webtoons: mergedData }, () => {
+                            allWebtoons = mergedData;
+                            afficherListe(mergedData);
+                            alert("Importation réussie !");
+                        });
+                    });
+                }
+            } catch (err) {
+                alert("Erreur lors de la lecture du fichier JSON.");
+            }
+        };
+        reader.readAsText(file);
+    });
+
     function afficherListe(webtoons) {
         liste.innerHTML = '';
         
-        // Tri par date de dernière mise à jour (plus récent en premier)
         const entries = Object.entries(webtoons).sort((a, b) => {
             const dateA = a[1].lastUpdate || 0;
             const dateB = b[1].lastUpdate || 0;
@@ -122,13 +169,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function supprimerWebtoon(titreASupprimer) {
-        chrome.storage.sync.get(['webtoons'], (result) => {
-            let webtoons = result.webtoons || {};
-            delete webtoons[titreASupprimer];
-            chrome.storage.sync.set({ webtoons: webtoons }, () => {
-                allWebtoons = webtoons;
-                afficherListe(webtoons);
+        if (confirm(`Supprimer "${titreASupprimer}" ?`)) {
+            chrome.storage.sync.get(['webtoons'], (result) => {
+                let webtoons = result.webtoons || {};
+                delete webtoons[titreASupprimer];
+                chrome.storage.sync.set({ webtoons: webtoons }, () => {
+                    allWebtoons = webtoons;
+                    afficherListe(webtoons);
+                });
             });
-        });
+        }
     }
 });

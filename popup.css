@@ -140,3 +140,21 @@ li:hover {
 .webtoon-link {
     margin-right: 0;
 }
+
+.backup-container {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+    display: flex;
+    gap: 10px;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    font-size: 11px;
+    padding: 6px;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
