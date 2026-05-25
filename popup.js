@@ -77,13 +77,14 @@ document.addEventListener('DOMContentLoaded', () => {
             let numChapitre = typeof data === 'object' ? data.chapitre : data;
             let lienLivre = typeof data === 'object' ? data.url : null;
             let lastUpdate = typeof data === 'object' ? data.lastUpdate : null;
+            let nomAffiche = (typeof data === 'object' && data.titreAffichage) ? data.titreAffichage : titre;
             
             const infoContainer = document.createElement('div');
             infoContainer.className = 'webtoon-info';
 
             const texte = document.createElement('a');
             texte.className = 'webtoon-link';
-            texte.textContent = `${titre} - Chap. ${numChapitre}`;
+            texte.textContent = `${nomAffiche} - Chap. ${numChapitre}`;
             
             if (lienLivre) {
                 texte.href = lienLivre;
