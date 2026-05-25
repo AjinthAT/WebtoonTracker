@@ -1,28 +1,39 @@
-const url = new URL(window.location.href);
-const pathParts = url.pathname.split('/');
-const viewerIndex = pathParts.indexOf('viewer');
-
-if (viewerIndex >= 2) {
-    let titreBrut = pathParts[viewerIndex - 2]; 
-    let titre = titreBrut.replace(/-/g, ' ').toUpperCase(); 
-    
-    let chapitreBrut = pathParts[viewerIndex - 1]; 
-    let chapitre = chapitreBrut.replace('ep', ''); 
-
-    // On récupère le lien complet de la page actuelle
-    const lienComplet = window.location.href;
-
-    chrome.storage.local.get(['webtoons'], (result) => {
-        let webtoons = result.webtoons || {};
+(function() {
+    try {
+        const url = new URL(window.location.href);
+        const pathParts = url.pathname.split('/').filter(part => part !== '');
         
-        // Au lieu de juste sauvegarder le texte, on sauvegarde un objet avec le chapitre et l'URL
-        webtoons[titre] = {
-            chapitre: chapitre,
-            url: lienComplet
-        };
+        // Structure attendue : /en/action/omniscient-reader/viewer?title_no=...
+        // On cherche l'index de 'viewer'
+        const viewerIndex = pathParts.indexOf('viewer');
 
-        chrome.storage.local.set({ webtoons: webtoons }, () => {
-            console.log(`✅ Sauvegardé : ${titre} Chapitre ${chapitre} avec son URL.`);
-        });
-    });
-}
+        if (viewerIndex >= 2) {
+            const titreBrut = pathParts[viewerIndex - 2]; 
+            const titre = titreBrut.replace(/-/g, ' ').toUpperCase(); 
+            
+            const chapitreBrut = pathParts[viewerIndex - 1]; 
+            const chapitre = chapitreBrut.replace('ep', '').replace('episode-', ''); 
+
+            const lienComplet = window.location.href;
+
+            chrome.storage.local.get(['webtoons'], (result) => {
+                let webtoons = result.webtoons || {};
+                
+                // On ne met à jour que si les données sont valides
+                if (titre && chapitre) {
+                    webtoons[titre] = {
+                        chapitre: chapitre,
+                        url: lienComplet,
+                        lastUpdate: Date.now()
+                    };
+
+                    chrome.storage.local.set({ webtoons: webtoons }, () => {
+                        console.log(`[Webtoon Tracker] ✅ Sauvegardé : ${titre} (Ep. ${chapitre})`);
+                    });
+                }
+            });
+        }
+    } catch (error) {
+        console.error('[Webtoon Tracker] Erreur lors de la capture de la progression :', error);
+    }
+})();
