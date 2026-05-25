@@ -2,11 +2,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const titreInput = document.getElementById('titre');
     const chapitreInput = document.getElementById('chapitre');
     const btnSauvegarder = document.getElementById('sauvegarder');
+    const rechercheInput = document.getElementById('recherche');
     const liste = document.getElementById('liste');
 
+    let allWebtoons = {};
+
+    // Charger les données initiales
     chrome.storage.sync.get(['webtoons'], (result) => {
-        let webtoons = result.webtoons || {};
-        afficherListe(webtoons);
+        allWebtoons = result.webtoons || {};
+        afficherListe(allWebtoons);
+    });
+
+    // Gestion de la recherche
+    rechercheInput.addEventListener('input', (e) => {
+        const terme = e.target.value.toLowerCase();
+        const filtres = {};
+        
+        for (const [titre, data] of Object.entries(allWebtoons)) {
+            if (titre.toLowerCase().includes(terme)) {
+                filtres[titre] = data;
+            }
+        }
+        afficherListe(filtres);
     });
 
     btnSauvegarder.addEventListener('click', () => {
@@ -16,10 +33,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (titre && chapitre) {
             chrome.storage.sync.get(['webtoons'], (result) => {
                 let webtoons = result.webtoons || {};
-                // Ajout manuel : on n'a pas d'URL, on met null
-                webtoons[titre] = { chapitre: chapitre, url: null }; 
+                webtoons[titre] = { 
+                    chapitre: chapitre, 
+                    url: null,
+                    lastUpdate: Date.now()
+                }; 
 
                 chrome.storage.sync.set({ webtoons: webtoons }, () => {
+                    allWebtoons = webtoons;
                     afficherListe(webtoons);
                     titreInput.value = '';
                     chapitreInput.value = '';
@@ -30,12 +51,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function afficherListe(webtoons) {
         liste.innerHTML = '';
-        const entries = Object.entries(webtoons);
+        
+        // Tri par date de dernière mise à jour (plus récent en premier)
+        const entries = Object.entries(webtoons).sort((a, b) => {
+            const dateA = a[1].lastUpdate || 0;
+            const dateB = b[1].lastUpdate || 0;
+            return dateB - dateA;
+        });
 
         if (entries.length === 0) {
             const emptyMsg = document.createElement('div');
             emptyMsg.className = 'empty-msg';
-            emptyMsg.textContent = 'Aucun webtoon suivi pour le moment.';
+            emptyMsg.style.textAlign = 'center';
+            emptyMsg.style.color = '#999';
+            emptyMsg.style.fontStyle = 'italic';
+            emptyMsg.style.marginTop = '20px';
+            emptyMsg.textContent = rechercheInput.value ? 'Aucun résultat trouvé.' : 'Aucun webtoon suivi.';
             liste.appendChild(emptyMsg);
             return;
         }
@@ -45,7 +76,11 @@ document.addEventListener('DOMContentLoaded', () => {
             
             let numChapitre = typeof data === 'object' ? data.chapitre : data;
             let lienLivre = typeof data === 'object' ? data.url : null;
+            let lastUpdate = typeof data === 'object' ? data.lastUpdate : null;
             
+            const infoContainer = document.createElement('div');
+            infoContainer.className = 'webtoon-info';
+
             const texte = document.createElement('a');
             texte.className = 'webtoon-link';
             texte.textContent = `${titre} - Chap. ${numChapitre}`;
@@ -59,6 +94,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 texte.style.cursor = 'default';
             }
 
+            infoContainer.appendChild(texte);
+
+            if (lastUpdate) {
+                const dateElement = document.createElement('span');
+                dateElement.className = 'last-read';
+                dateElement.textContent = `Lu le ${new Date(lastUpdate).toLocaleDateString()} à ${new Date(lastUpdate).toLocaleTimeString([], {hour: '2d', minute:'2d'})}`;
+                infoContainer.appendChild(dateElement);
+            }
+
             const btnSupprimer = document.createElement('button');
             btnSupprimer.textContent = '✕';
             btnSupprimer.className = 'btn-supprimer';
@@ -68,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 supprimerWebtoon(titre);
             });
 
-            li.appendChild(texte);
+            li.appendChild(infoContainer);
             li.appendChild(btnSupprimer);
             liste.appendChild(li);
         }
@@ -79,6 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let webtoons = result.webtoons || {};
             delete webtoons[titreASupprimer];
             chrome.storage.sync.set({ webtoons: webtoons }, () => {
+                allWebtoons = webtoons;
                 afficherListe(webtoons);
             });
         });

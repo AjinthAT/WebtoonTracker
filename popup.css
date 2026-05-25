@@ -115,9 +115,28 @@ li:hover {
     color: white;
 }
 
-.empty-msg {
-    text-align: center;
-    color: #999;
-    font-style: italic;
-    margin-top: 20px;
+.search-container {
+    margin-top: 15px;
+}
+
+#recherche {
+    background-color: #fff;
+    border: 1px solid #00c564;
+}
+
+.webtoon-info {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.last-read {
+    font-size: 10px;
+    color: #888;
+    margin-top: 2px;
+}
+
+.webtoon-link {
+    margin-right: 0;
 }
