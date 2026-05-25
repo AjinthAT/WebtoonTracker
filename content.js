@@ -1,62 +1,34 @@
 (function() {
-    console.log("[Webtoon Tracker] Script de contenu chargé.");
+    // Fonction de capture simplifiée et robuste
+    function capture() {
+        const url = window.location.href;
+        if (!url.includes('viewer')) return;
 
-    function trackProgress() {
-        try {
-            // On ne s'exécute que si on est dans le viewer
-            if (!window.location.href.includes('viewer')) return;
+        const pathParts = window.location.pathname.split('/').filter(p => p);
+        const viewerIndex = pathParts.indexOf('viewer');
 
-            const urlParams = new URLSearchParams(window.location.search);
-            const episodeNo = urlParams.get('episode_no');
+        if (viewerIndex >= 2) {
+            // Extraction fiable via l'URL (marche en FR et EN)
+            let titre = pathParts[viewerIndex - 2].replace(/-/g, ' ').toUpperCase();
             
-            // 1. Récupération du titre
-            let titre = "";
-            // Essai via plusieurs sélecteurs possibles (selon les langues)
-            const selectors = ['.subj_info .subj', '.viewer_header .subj', 'h2.subj', '.title'];
-            for (const s of selectors) {
-                const el = document.querySelector(s);
-                if (el && el.textContent.trim()) {
-                    titre = el.textContent.trim().toUpperCase();
-                    break;
-                }
-            }
-
-            // Fallback sur l'URL si le titre n'est toujours pas trouvé
-            if (!titre) {
-                const pathParts = window.location.pathname.split('/').filter(p => p);
-                const viewerIndex = pathParts.indexOf('viewer');
-                if (viewerIndex >= 2) {
-                    titre = pathParts[viewerIndex - 2].replace(/-/g, ' ').toUpperCase();
-                }
-            }
-
-            // 2. Récupération du chapitre
-            let chapitre = episodeNo;
+            // Extraction du chapitre via le paramètre d'URL (le plus sûr)
+            const urlParams = new URLSearchParams(window.location.search);
+            let chapitre = urlParams.get('episode_no');
+            
+            // Fallback si episode_no absent
             if (!chapitre) {
-                const epSelectors = ['.subj_info .subj_episode', '.viewer_header .episode_num'];
-                for (const s of epSelectors) {
-                    const el = document.querySelector(s);
-                    if (el && el.textContent.trim()) {
-                        chapitre = el.textContent.replace(/[^0-9]/g, '');
-                        break;
-                    }
-                }
+                chapitre = pathParts[viewerIndex - 1].replace(/[^0-9]/g, '');
             }
-
-            console.log(`[Webtoon Tracker] Tentative de détection : ${titre} - Chapitre ${chapitre}`);
 
             if (titre && chapitre) {
-                const lienComplet = window.location.href;
-
                 chrome.storage.sync.get(['webtoons'], (result) => {
                     let webtoons = result.webtoons || {};
                     
-                    const current = webtoons[titre];
-                    // On met à jour si le chapitre change OU si on n'avait pas d'URL (ajout manuel précédent)
-                    if (!current || current.chapitre !== chapitre || !current.url) {
+                    // On ne met à jour que si nécessaire
+                    if (!webtoons[titre] || webtoons[titre].chapitre !== chapitre) {
                         webtoons[titre] = {
                             chapitre: chapitre,
-                            url: lienComplet,
+                            url: url,
                             lastUpdate: Date.now()
                         };
 
@@ -66,22 +38,18 @@
                     }
                 });
             }
-        } catch (error) {
-            console.error('[Webtoon Tracker] Erreur lors de la capture :', error);
         }
     }
 
-    // Un petit délai car le DOM de Webtoon est parfois lent à charger complètement
-    setTimeout(trackProgress, 2000);
+    // Exécution au chargement
+    capture();
 
-    // Surveillance des changements d'URL (Infinite scroll)
-    let lastUrl = location.href;
+    // Surveillance des changements d'épisode (navigation fluide)
+    let currentUrl = location.href;
     setInterval(() => {
-        if (location.href !== lastUrl) {
-            lastUrl = location.href;
-            console.log("[Webtoon Tracker] Changement de page détecté.");
-            setTimeout(trackProgress, 1000);
+        if (location.href !== currentUrl) {
+            currentUrl = location.href;
+            capture();
         }
-    }, 3000);
-
+    }, 2000);
 })();
